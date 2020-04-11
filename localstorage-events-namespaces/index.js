@@ -98,10 +98,7 @@ export function useLocalStorageNS (namespace, storage = localStorage) {
         case 'getItem':
         case 'removeItem': {
           // intercept, namespace the key, pass through
-          return (key, ...args) => {
-            const nextArgs = [ ns(key), ...args ]
-            ls[prop].apply(ls, nextArgs)
-          }
+          return (key, ...args) => ls[prop].call(ls, ns(key), ...args)
         }
 
         default: {
