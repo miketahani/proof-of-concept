@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { useLocalStorageNS } from './useLocalStorageNS'
+import { useLocalStorageNamespace } from './useLocalStorageNamespace'
 import { useLocalStorageSubscription } from './useLocalStorageSubscription'
 import './style.css'
 
 const DEFAULT_NAMESPACE = 'hook-demo'
 
 // for illustrative purposes
-// leaf that's connected to the root storage via useLocalStorageSubscription
-// and shares events with other connected components
+// leaf that's connected to the root storage via useLocalStorageSubscription,
+// sharing storage events with other connected components
 function CallCount () {
   const [callCount, setCallCount] = useState({})
 
@@ -46,7 +46,7 @@ export function Demo () {
   }, [])
 
   const reactiveStore = useLocalStorageSubscription(handleStoreEvent)
-  const ns = useLocalStorageNS(namespace, reactiveStore)
+  const ns = useLocalStorageNamespace(namespace, reactiveStore)
 
   const addItem = () => {
     ns.setItem(keyInput.current.value, valueInput.current.value)

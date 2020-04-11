@@ -39,7 +39,7 @@ The `useLocalStorageSubscription` hook takes uses a global reactive storage area
 
 ### 2. Namespaces
 
-The `useLocalStorageNS` hook takes a namespace and a storage area and returns a proxy that acts just like the provided area but with two additional methods:
+The `useLocalStorageNamespace` hook takes a namespace and a storage area and returns a proxy that acts just like the provided area but with two additional methods:
 
 1. `clear`, which clears the keys for the namespace in the storage area
 2. `getNS`, which returns an array of `[key, value]` for the keys in the namespace
