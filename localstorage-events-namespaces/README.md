@@ -31,9 +31,9 @@ unsubscribe()
 2. Subscribes to store change events (`subscribe` returns an unsubscribe function)
 3. `store event: setItem ‣(2) ["testing", "success!"]`
 
-A huge caveat: this will only emit events when the `localStore` event adapter is instantiated once, then imported and used in place of native `localStorage` references across your code. This renders it fairly useless if you need to listen for changes that don't occur via the adapter (e.g., direct manipulation of the original storage object by a developer or a different storage abstraction).
+A huge caveat: this will only emit events when the event adapter is instantiated once, then imported and used in place of native `localStorage` references across your code. To listen for changes that don't occur via the adapter (e.g., direct manipulation of the original storage object by a developer or a different storage abstraction), a second boolean argument can be passed – `shouldOverrideWindowStorage`, which will use `Object.defineProperty` to override the window `localStorage` property so all calls to `localStorage` are intercepted by the event proxy.
 
-##### Hook
+#### Hook
 
 The `useLocalStorageSubscription` hook takes a global reactive storage area (i.e., the above resulting storage proxy) and a callback, and subscribes the callback to storage events.
 

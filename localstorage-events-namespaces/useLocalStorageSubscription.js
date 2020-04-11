@@ -15,10 +15,13 @@ class Events {
   }
 }
 
-function eventedStorage (storage = localStorage) {
+function eventedStorage (
+  storage = localStorage,
+  shouldOverrideWindowStorage = false
+) {
   const events = new Events()
 
-  return new Proxy(storage, {
+  const handler = {
     set (ls, prop, value) {
       ls[prop] = value
       events.dispatch('setItem', prop, value)
@@ -48,7 +51,15 @@ function eventedStorage (storage = localStorage) {
         }
       }
     }
-  })
+  }
+
+  const proxy = new Proxy(storage, handler)
+
+  if (window && shouldOverrideWindowStorage) {
+    Object.defineProperty(window, 'localStorage', { get: () => proxy })
+  }
+
+  return proxy
 }
 
 // export { localStore: eventedStorage(localStorage) }
