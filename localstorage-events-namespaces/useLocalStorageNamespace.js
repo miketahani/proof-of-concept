@@ -1,6 +1,8 @@
-// localStore is independent from useLocalStorageNS, which implements
+import React, { useCallback, useMemo } from 'react'
+
+// localStore is independent from useLocalStorageNamespace, which implements
 // namespacing and serves as a native api abstraction
-export function useLocalStorageNS (namespace, storage = localStorage) {
+export function useLocalStorageNamespace (namespace, storage = localStorage) {
   const ns = useCallback((key = '') => `${namespace}/${key}`, [namespace])
 
   const getKeys = useCallback(() => {
@@ -21,18 +23,17 @@ export function useLocalStorageNS (namespace, storage = localStorage) {
     ])
   }, [ns, getKeys, storage])
 
-  // need a proxy for opaquely namespacing keys on `{get|set|remove}Item`
-  // FIXME cache the proxy in a ref so we're not constantly creating new
-  //       proxies on rerenders?
-  return new Proxy(storage, {
+  const handler = useMemo(() => ({
     set (ls, key, value) {
       ls.setItem(ns(key), value)
     },
 
     get (ls, prop) {
       switch (prop) {
-        case 'clear': return clear
         case 'getNS': return getNS
+
+        // overrides native `clear`
+        case 'clear': return clear
 
         case 'setItem':
         case 'getItem':
@@ -47,5 +48,8 @@ export function useLocalStorageNS (namespace, storage = localStorage) {
         }
       }
     }
-  })
+  }), [ns, getNS, clear])
+
+  // need a proxy for opaquely namespacing keys on `{get|set|remove}Item`
+  return new Proxy(storage, handler)
 }
