@@ -22,7 +22,7 @@ For example:
 ```js
 const localStore = eventedStorage(localStorage)   // [1]
 const unsubscribe = localStore.subscribe(         // [2]
-  (method, ...args) => console.log('store event', method, args)
+  (method, ...args) => console.log('store event:', method, args)
 )
 localStore.setItem('testing', 'success!')         // [3]
 unsubscribe()
