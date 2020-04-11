@@ -27,6 +27,7 @@ function eventedStorage (storage = localStorage) {
     get (ls, prop) {
       switch (prop) {
         case 'subscribe': {
+          // route to events
           return events[prop].bind(events)
         }
         case 'setItem':
@@ -94,14 +95,13 @@ export function useLocalStorageNS (namespace, store = localStorage) {
         case 'setItem':
         case 'getItem':
         case 'removeItem': {
+          // intercept, namespace the key, pass through
           return (key, ...args) => ls[prop].apply(ls, [ns(key), ...args])
         }
 
         default: {
-          const lsProp = ls[prop]
-          return typeof(lsProp) === 'function'
-            ? lsProp.bind(ls)
-            : lsProp
+          const p = ls[prop]
+          return typeof(p) === 'function' ? p.bind(ls) : p
         }
       }
     }
