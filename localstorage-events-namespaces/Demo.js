@@ -5,6 +5,29 @@ import './style.css'
 
 const DEFAULT_NAMESPACE = 'hook-demo'
 
+// for illustrative purposes
+// leaf that's connected to the root storage via useLocalStorageSubscription
+// and shares events with other connected components
+function CallCount () {
+  const [callCount, setCallCount] = useState({})
+
+  const handleStoreEvent = useCallback((method, ...args) => {
+    setCallCount({
+      ...callCount,
+      [method]: (callCount[method] || 0) + 1
+    })
+  }, [callCount])
+
+  const reactiveStore = useLocalStorageSubscription(handleStoreEvent)
+
+  return (
+    <div className='call-count'>
+      <span>setItem: {callCount.setItem || 0}</span>
+      <span>removeItem: {callCount.removeItem || 0}</span>
+    </div>
+  )
+}
+
 export function Demo () {
   const keyInput = useRef()
   const valueInput = useRef()
@@ -35,7 +58,15 @@ export function Demo () {
 
   return (
     <div className='demo-container'>
-      Namespace: <input type='text' onChange={updateNamespace} defaultValue={namespace} />
+      <div className='header'>
+        <div>
+          <strong>Namespace</strong>&nbsp;
+          <input type='text' onChange={updateNamespace} defaultValue={namespace} />
+        </div>
+        <div>
+          <CallCount />
+        </div>
+      </div>
 
       <div className='add-container'>
         <h3>Add Item</h3>
