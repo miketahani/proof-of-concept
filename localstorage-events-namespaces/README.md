@@ -20,18 +20,26 @@ Note that this will "create" (intercept) a "reserved" key: `subscribe`.
 For example:
 
 ```js
-const localStore = eventedStorage(localStorage)   // [1]
-const unsubscribe = localStore.subscribe(         // [2]
+const store = eventedStorage(localStorage)   // [1]
+const unsubscribe = store.subscribe(         // [2]
   (method, ...args) => console.log('store event:', method, args)
 )
-localStore.setItem('testing', 'success!')         // [3]
+store.setItem('testing', 'success!')         // [3]
 unsubscribe()
 ```
 1. Returns a proxy for `localStorage` that emits `localStorage` events
 2. Subscribes to store change events (`subscribe` returns an unsubscribe function)
 3. `store event: setItem ‣(2) ["testing", "success!"]`
 
-A huge caveat: this will only emit events when the event adapter is instantiated once, then imported and used in place of native `localStorage` references across your code. To listen for changes that don't occur via the adapter (e.g., direct manipulation of the original storage object by a developer or a different storage abstraction), a second boolean argument can be passed – `shouldOverrideWindowStorage`, which will use `Object.defineProperty` to override the window `localStorage` property so all calls to `localStorage` are intercepted by the event proxy.
+A huge caveat: this will only emit events when the event adapter is instantiated once, then imported and used in place of native `localStorage` references across your code. To listen for changes that don't occur via the adapter (e.g., direct manipulation of the original storage object by a developer or a different storage abstraction), a second boolean argument can be passed – `shouldOverrideWindowStorage`. This will trigger the use of `Object.defineProperty` to override the window `localStorage` property so all calls to `localStorage` are intercepted by the event proxy. For example:
+
+```js
+const store = eventedStorage(localStorage, true) // [1]
+localStorage.subscribe((...args) => console.log('localStorage:', args))
+localStorage.setItem('testing', 'success!')      // [2]
+```
+1. `store` and `window.localStorage` are now the same thing
+2. `localStorage: ‣(3) ["setItem", "testing", "success!"]`
 
 #### Hook
 
