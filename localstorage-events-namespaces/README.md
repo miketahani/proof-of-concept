@@ -35,7 +35,7 @@ A huge caveat: this will only emit events when the `localStore` event adapter is
 
 ##### Hook
 
-The `useLocalStorageSubscription` hook takes uses a global reactive storage area (i.e., the above resulting storage proxy) and a callback, and calls the callback whenever an event is fired.
+The `useLocalStorageSubscription` hook takes a global reactive storage area (i.e., the above resulting storage proxy) and a callback, and subscribes the callback to storage events.
 
 ### 2. Namespaces
 
