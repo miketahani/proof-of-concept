@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { useLocalStorageNS, useLocalStorageSubscription } from './index'
+import { useLocalStorageNS } from './useLocalStorageNS'
+import { useLocalStorageSubscription } from './useLocalStorageSubscription'
 import './style.css'
 
 const DEFAULT_NAMESPACE = 'hook-demo'
