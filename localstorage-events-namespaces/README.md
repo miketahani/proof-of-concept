@@ -22,14 +22,14 @@ For example:
 ```js
 const localStore = eventedStorage(localStorage)   // [1]
 const unsubscribe = localStore.subscribe(         // [2]
-  (method, ...args) => console.log(method, args)
+  (method, ...args) => console.log('store event', method, args)
 )
 localStore.setItem('testing', 'success!')         // [3]
 unsubscribe()
 ```
 1. Returns a proxy for `localStorage` that emits `localStorage` events
 2. Subscribes to store change events (`subscribe` returns an unsubscribe function)
-3. Triggers new event with args: `("setItem", "testing", "success!")` aka `(method, ...args)`
+3. `store event: setItem ‣(2) ["testing", "success!"]`
 
 A huge caveat: this will only emit events when the `localStore` event adapter is instantiated once, then imported and used in place of native `localStorage` references across your code. This renders it fairly useless if you need to listen for changes that don't occur via the adapter (e.g., direct manipulation of the original storage object by a developer or a different storage abstraction).
 
