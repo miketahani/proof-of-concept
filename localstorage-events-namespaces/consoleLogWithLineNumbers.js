@@ -5,7 +5,7 @@
 
   // have to use a proxy bc using `Object.defineProperty(console, 'log', ...)` will
   // cause an infinite call loop
-  const proxy = new Proxy(globalThis.console || {}, {
+  const proxy = new Proxy(globalThis.console, {
     get (_console, prop) {
       if (prop === 'log') {
         return (...args) => _console.log.call(_console, ++lineNum, ...args)
