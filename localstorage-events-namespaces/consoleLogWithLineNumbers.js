@@ -9,7 +9,7 @@
         return (...args) => _console.log.call(_console, ++lineNum, ...args)
       }
       const p = _console[prop]
-      return typeof(p) === 'function' ? p.bind(con) : p
+      return typeof(p) === 'function' ? p.bind(_console) : p
     }
   })
 
