@@ -49,7 +49,8 @@ export function useWebSocket (url, onMessage) {
     return () => ws.current.removeEventListener('message', onMessage)
   }, [onMessage])
 
-  const send = message => ws.current && ws.current.send(message)
+  const send = message =>
+    ws.current?.readyState === WebSocket.OPEN && ws.current.send(message)
 
   return {
     status: ws.current?.readyState || WebSocket.CONNECTING,
