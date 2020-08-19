@@ -38,11 +38,10 @@ export function useWebSocket (url, onMessage) {
     }
   }, [url])
 
-  // Separate the message handling from the other websocket events because
-  // if we're using hooks, the message handler may change frequently (as the
-  // consumer may redefine the message handler based on external deps and
-  // sometimes we don't want to continuously connect and disconnect from a
-  // streaming socket.
+  // Separate message handling from other websocket events because the message
+  // handler may change frequently (as the consumer may redefine the handler
+  // based on external deps) and sometimes we don't want to constantly
+  // reconnect to a streaming socket.
   useEffect(() => {
     if (!ws.current) return;
     ws.current.addEventListener('message', onMessage)
