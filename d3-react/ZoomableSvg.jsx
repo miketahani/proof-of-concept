@@ -14,7 +14,6 @@ export function ZoomableSvg ({
   children
 }) {
   const svg = useRef()
-  const container = useRef()
   const [transform, setTransform] = useState(null)
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export function ZoomableSvg ({
 
   return (
     <svg ref={svg} width={width} height={height}>
-      <g ref={container} transform={transform}>{children}</g>
+      <g transform={transform}>{children}</g>
     </svg>
   )
 }
