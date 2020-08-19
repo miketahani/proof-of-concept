@@ -32,7 +32,7 @@ export function ZoomableSvg ({
 
   return (
     <svg ref={svg} width={width} height={height}>
-      <g ref={container}>{!!children && children}</g>
+      <g ref={container}>{children}</g>
     </svg>
   )
 }
