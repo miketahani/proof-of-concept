@@ -52,7 +52,7 @@ export function useWebSocket (url, onMessage) {
     ws.current?.readyState === WebSocket.OPEN && ws.current.send(message)
 
   return {
-    status: ws.current?.readyState || WebSocket.CONNECTING,
+    status: ws.current?.readyState ?? WebSocket.CONNECTING,
     error,
     send
   }
