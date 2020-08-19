@@ -19,11 +19,11 @@ export function ZoomableSvg ({
   useEffect(() => {
     if (!svg.current) return;
 
-    const selection = d3select(svg.current)
-    const zoomSelection = d3zoom().on('zoom', () => setTransform(d3event.transform))
-    selection.call(zoomSelection)
+    const svgNode = d3select(svg.current)
+    const svgZoom = d3zoom().on('zoom', () => setTransform(d3event.transform))
+    svgNode.call(svgZoom)
 
-    return () => selection.on('.zoom', null) // Clear the event handler
+    return () => svgNode.on('.zoom', null) // Clear the event handler
   }, [])
 
   return (
