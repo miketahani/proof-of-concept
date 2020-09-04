@@ -27,9 +27,10 @@
         this.node.setAttribute(attrName, ...args)
         return this
       }
-      appendTo = element => {
-        element.appendChild(this.node)
-        return this
+      append = tagName => {
+        const node = new Svg(tagName)
+        this.node.appendChild(node.node)
+        return node
       }
     }
     const svg = (...args) => new Svg(...args)
@@ -87,18 +88,16 @@
       .attr('height', height)
     document.getElementById('root').appendChild(container.node)
 
-    const food = svg('rect')
+    const food = container.append('rect')
       .attr('x', width / 2 - 50)
       .attr('y', height / 2 - 50)
       .attr('width', 100)
       .attr('height', 100)
       .attr('fill', 'red')
-      .appendTo(container.node)
 
-    const player = svg('path')
+    const player = container.append('path')
       .attr('d', `M0,3L1,0L2,3Z`)
       .attr('fill', 'black')
-      .appendTo(container.node)
 
     const controller = new Controller(width, height)
 
