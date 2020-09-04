@@ -34,13 +34,6 @@
     }
     const svg = (...args) => new Svg(...args)
 
-    const width = window.innerWidth
-    const height = window.innerHeight
-    const container = svg('svg')
-      .attr('width', width)
-      .attr('height', height)
-    document.getElementById('root').appendChild(container.node)
-
     // https://www.smashingmagazine.com/2015/11/gamepad-api-in-web-games/
     const applyDeadzone = function (number, threshold = 0.25) {
       const percentage = (Math.abs(number) - threshold) / (1 - threshold)
@@ -86,6 +79,26 @@
         return this
       }
     }
+
+    const width = window.innerWidth
+    const height = window.innerHeight
+    const container = svg('svg')
+      .attr('width', width)
+      .attr('height', height)
+    document.getElementById('root').appendChild(container.node)
+
+    const food = svg('rect')
+      .attr('x', width / 2 - 50)
+      .attr('y', height / 2 - 50)
+      .attr('width', 100)
+      .attr('height', 100)
+      .attr('fill', 'red')
+      .appendTo(container.node)
+
+    const player = svg('path')
+      .attr('d', `M0,3L1,0L2,3Z`)
+      .attr('fill', 'black')
+      .appendTo(container.node)
 
     const controller = new Controller(width, height)
 
