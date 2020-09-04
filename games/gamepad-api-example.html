@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='utf8'>
+  <title>sketch</title>
+  <style>
+    body, #root {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id='root'></div>
+
+  <script>
+    let gamepad
+
+    class Svg {
+      constructor (tagName) {
+        this.node = document.createElementNS('http://www.w3.org/2000/svg', tagName)
+        return this
+      }
+      attr = (attrName, ...args) => {
+        this.node.setAttribute(attrName, ...args)
+        return this
+      }
+      appendTo = element => {
+        element.appendChild(this.node)
+        return this
+      }
+    }
+    const svg = (...args) => new Svg(...args)
+
+    const width = window.innerWidth
+    const height = window.innerHeight
+    const container = svg('svg')
+      .attr('width', width)
+      .attr('height', height)
+    document.getElementById('root').appendChild(container.node)
+
+    // https://www.smashingmagazine.com/2015/11/gamepad-api-in-web-games/
+    const applyDeadzone = function (number, threshold = 0.25) {
+      const percentage = (Math.abs(number) - threshold) / (1 - threshold)
+      return Math.max(0, percentage) * (number > 0 ? 1 : -1);
+    }
+
+    class Controller {
+      constructor (maxWidth, maxHeight, stepSize = 10) {
+        this.maxWidth = maxWidth
+        this.maxHeight = maxHeight
+        this.x = maxWidth / 2
+        this.y = maxHeight / 2
+        this.stepSize = stepSize
+      }
+
+      tick (axes) {
+        const [lh, lv, rh, rv] = axes.map(axis => applyDeadzone(axis))
+
+        let nextX = this.x + lh * this.stepSize
+        let nextY = this.y + lv * this.stepSize
+
+
+        // Bail if player hasn't moved -- this prevents the player icon from "resetting"
+        //  its rotation angle when the last directional vector received (nextX, nextY)
+        //  is the same as the prior vector (this.x, this.y) (which causes angle = 0
+        //  no matter which direction the player is facing)
+        if (nextX === this.x && nextY === this.y) return this;
+
+        // Get angle between the two directional vectors (for player rotation)
+        this.angle = Math.atan2(this.y - nextY, this.x - nextX)
+
+        // console.log(this.angle, [lh, lv], [this.x, this.y], [nextX, nextY])
+
+        // Check boundaries
+        if (nextX > this.maxWidth) nextX = 0;
+        if (nextX < 0) nextX = this.maxWidth;
+        if (nextY > this.maxHeight) nextY = 0;
+        if (nextY < 0) nextY = this.maxHeight;
+
+        this.x = nextX
+        this.y = nextY
+
+        return this
+      }
+    }
+
+    const controller = new Controller(width, height)
+
+    window.addEventListener('gamepadconnected', e => {
+      const { index, id, buttons, axes } = e.gamepad
+      console.log(
+        `Gamepad connected at index ${index}: ${id}. ${buttons.length} buttons, ${axes.length} axes.`
+      )
+      // Doesn't work:
+      // gamepad = e.gamepad
+      // gamepad = navigator.getGamepads()[0]
+      render()
+    })
+
+    function render (t = 0) {
+      requestAnimationFrame(render)
+
+      // Get gamepad state (FIXME it's a lot more performant to just hold a ref
+      //  to a global `gamepad` variable, but when I tried that, the ref didn't
+      //  update)
+      const axes = navigator.getGamepads()?.[0]?.axes
+      const { x, y, angle } = controller.tick(axes)
+
+      player
+        .attr('transform', `translate(${x},${y}) rotate(${angle * 180 / Math.PI - 90} 1 1.5) scale(10)`)
+    }
+  </script>
+</body>
+</html>
