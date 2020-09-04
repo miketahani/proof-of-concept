@@ -120,6 +120,8 @@
       //  to a global `gamepad` variable, but when I tried that, the ref didn't
       //  update)
       const axes = navigator.getGamepads()?.[0]?.axes
+      if (!axes) return;
+
       const { x, y, angle } = controller.tick(axes)
 
       player
